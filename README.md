@@ -83,6 +83,55 @@ src/
 └── utils/            # Utility functions
 ```
 
+## Adding Members
+
+The member data is stored in `data/members.json`. This file is the heart of the application — without it, the directory will be empty.
+
+### Data Schema
+
+Each member object requires the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (e.g., "john-doe") |
+| `name` | string | Full name of the member |
+| `passoutYear` | number | Year of graduation |
+| `major` | string | Department (CSE, IT, ECE, etc.) |
+| `role` | string | Role (Student, Software Engineer, etc.) |
+| `interests` | string | Comma-separated interests |
+| `color` | string | Hex color for the card accent |
+| `image` | string | URL to member's photo |
+| `bio` | string | Short biography |
+| `github` | string | GitHub username |
+| `linkedin` | string | LinkedIn username |
+| `twitter` | string | Twitter username (optional) |
+
+### Example Entry
+
+```json
+{
+  "id": "john-doe",
+  "name": "John Doe",
+  "passoutYear": 2026,
+  "major": "CSE",
+  "role": "Student",
+  "interests": "Web Development, AI, Open Source",
+  "color": "#FFB6C1",
+  "image": "https://example.com/photo.jpg",
+  "bio": "Passionate about building cool things on the web.",
+  "github": "johndoe",
+  "linkedin": "johndoe",
+  "twitter": "johndoe"
+}
+```
+
+### Tips
+
+- Use consistent `passoutYear` values for filtering to work properly
+- The `color` field controls the card accent — pick colors that contrast well with white
+- For images, you can use any URL (hosted photos, Gravatar, DiceBear, etc.)
+- Leave `twitter` as an empty string `""` if the member doesn't have one
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
