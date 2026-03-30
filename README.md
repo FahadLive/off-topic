@@ -9,7 +9,6 @@ A member directory for GEC Palakkad's tech community.
 [![Vite](https://img.shields.io/badge/Vite-6.3-purple?logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
 
-
 </div>
 
 ## About
@@ -91,20 +90,20 @@ The member data is stored in `data/members.json`. This file is the heart of the 
 
 Each member object requires the following fields:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique identifier (e.g., "john-doe") |
-| `name` | string | Full name of the member |
-| `passoutYear` | number | Year of graduation |
-| `major` | string | Department (CSE, IT, ECE, etc.) |
-| `role` | string | Role (Student, Software Engineer, etc.) |
-| `interests` | string | Comma-separated interests |
-| `color` | string | Hex color for the card accent |
-| `image` | string | URL to member's photo |
-| `bio` | string | Short biography |
-| `github` | string | GitHub username |
-| `linkedin` | string | LinkedIn username |
-| `twitter` | string | Twitter username (optional) |
+| Field         | Type   | Description                             |
+| ------------- | ------ | --------------------------------------- |
+| `id`          | string | Unique identifier (e.g., "john-doe")    |
+| `name`        | string | Full name of the member                 |
+| `passoutYear` | number | Year of graduation                      |
+| `major`       | string | Department (CSE, IT, ECE, etc.)         |
+| `role`        | string | Role (Student, Software Engineer, etc.) |
+| `interests`   | string | Comma-separated interests               |
+| `color`       | string | Hex color for the card accent           |
+| `image`       | string | URL to member's photo                   |
+| `bio`         | string | Short biography                         |
+| `github`      | string | GitHub username                         |
+| `linkedin`    | string | LinkedIn username                       |
+| `twitter`     | string | Twitter username (optional)             |
 
 ### Example Entry
 
