@@ -12,6 +12,8 @@ import { Member } from "../../types/data";
 
 interface CardStackProps {
   members: Member[];
+  membersById: Map<string, Member>;
+  vouchCounts: Map<string, number>;
 }
 
 // Twitter/X icon component
@@ -21,7 +23,7 @@ const XIcon = () => (
   </svg>
 );
 
-export function CardStack({ members }: CardStackProps) {
+export function CardStack({ members, membersById, vouchCounts }: CardStackProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -95,7 +97,7 @@ export function CardStack({ members }: CardStackProps) {
             className="cursor-grab active:cursor-grabbing"
           >
             {/* ID Card */}
-            <MemberCard member={members[currentIndex]} index={currentIndex} />
+            <MemberCard member={members[currentIndex]} index={currentIndex} membersById={membersById} vouchCounts={vouchCounts} />
           </motion.div>
         </AnimatePresence>
       </div>

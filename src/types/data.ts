@@ -11,4 +11,5 @@ export type Member = {
   github: string;
   linkedin: string;
   twitter: string;
+  vouchedBy: string;
 };

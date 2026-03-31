@@ -13,9 +13,11 @@ const XIcon = () => (
 
 interface BrowseGridProps {
   members: Member[];
+  membersById: Map<string, Member>;
+  vouchCounts: Map<string, number>;
 }
 
-export function BrowseGrid({ members }: BrowseGridProps) {
+export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProps) {
   const [selectedYear, setSelectedYear] = useState<number | "all">("all");
   const [selectedRole, setSelectedRole] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -172,7 +174,7 @@ export function BrowseGrid({ members }: BrowseGridProps) {
               }}
             >
               {/* ID Card - Compact version */}
-              <MemberCard member={member} index={index} />
+              <MemberCard member={member} index={index} membersById={membersById} vouchCounts={vouchCounts} />
             </motion.div>
           ))}
         </AnimatePresence>

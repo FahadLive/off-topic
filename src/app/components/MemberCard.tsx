@@ -16,9 +16,11 @@ const BARCODE_HEIGHTS = [
 interface MemberCardProps {
   member: Member;
   index: number;
+  membersById?: Map<string, Member>;
+  vouchCounts?: Map<string, number>;
 }
 
-export function MemberCard({ member, index }: MemberCardProps) {
+export function MemberCard({ member, index, membersById, vouchCounts }: MemberCardProps) {
   const idNum = `#${String(index + 1).padStart(3, "0")}`;
   const yearShort = `'${String(member.passoutYear).slice(-2)}`;
   const interests = member.interests.split(",").slice(0, 3);
@@ -105,6 +107,30 @@ export function MemberCard({ member, index }: MemberCardProps) {
                 ))}
               </div>
             </div>
+
+            {member.vouchedBy && (
+              <div className="flex flex-col mt-[10px]">
+                <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
+                  [vouched by]
+                </span>
+                <span className="text-[10px] text-gray-900 leading-snug">
+                  {member.vouchedBy === "og-member"
+                    ? "OG Member"
+                    : membersById?.get(member.vouchedBy)?.name ?? member.vouchedBy}
+                </span>
+              </div>
+            )}
+
+            {(vouchCounts?.get(member.id) ?? 0) > 0 && (
+              <div className="flex flex-col mt-[10px]">
+                <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
+                  [vouched for]
+                </span>
+                <span className="text-[10px] text-gray-900 leading-snug">
+                  {vouchCounts!.get(member.id)} member{vouchCounts!.get(member.id)! > 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
 
             {/* Right accent bar */}
           </div>
