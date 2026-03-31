@@ -85,7 +85,7 @@ export function MemberCard({ member, index }: MemberCardProps) {
               <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
                 [about]
               </span>
-              <span className="text-[10px] text-gray-900 leading-relaxed line-clamp-3">
+              <span className="text-[10px] text-gray-900 leading-relaxed">
                 {member.bio}
               </span>
             </div>
