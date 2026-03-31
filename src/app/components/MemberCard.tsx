@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { Github, Linkedin, Instagram } from "lucide-react";
 import { Member } from "../../types/data";
 
@@ -21,6 +22,17 @@ interface MemberCardProps {
 }
 
 export function MemberCard({ member, index, membersById, vouchCounts }: MemberCardProps) {
+  const [bioExpanded, setBioExpanded] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
+  const bioRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = bioRef.current;
+    if (el) {
+      setIsClamped(el.scrollHeight > el.clientHeight);
+    }
+  }, [member.bio]);
+
   const idNum = `#${String(index + 1).padStart(3, "0")}`;
   const yearShort = `'${String(member.passoutYear).slice(-2)}`;
   const interests = member.interests.split(",").slice(0, 3);
@@ -87,9 +99,20 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
               <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
                 [about]
               </span>
-              <span className="text-[10px] text-gray-900 leading-relaxed line-clamp-3">
+              <span
+                ref={bioRef}
+                className={`text-[10px] text-gray-900 leading-relaxed ${bioExpanded ? "" : "line-clamp-3"}`}
+              >
                 {member.bio}
               </span>
+              {(isClamped || bioExpanded) && (
+                <button
+                  onClick={() => setBioExpanded(!bioExpanded)}
+                  className="text-[9px] font-bold text-[#1b66f3] mt-[2px] text-left hover:underline cursor-pointer"
+                >
+                  {bioExpanded ? "show less" : "show more"}
+                </button>
+              )}
             </div>
 
             <div className="flex flex-col">
