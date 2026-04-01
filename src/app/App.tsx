@@ -13,6 +13,20 @@ export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("stack");
   const members = memberData.members;
 
+  const membersById = useMemo(() => {
+    return new Map(members.map((m) => [m.id, m]));
+  }, [members]);
+
+  const vouchCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const m of members) {
+      if (m.vouchedBy && m.vouchedBy !== "og-member") {
+        counts.set(m.vouchedBy, (counts.get(m.vouchedBy) ?? 0) + 1);
+      }
+    }
+    return counts;
+  }, [members]);
+
   const shuffledMembers = useMemo(() => {
     return shuffleArray(members);
   }, [members]);
@@ -91,9 +105,9 @@ export default function App() {
       {/* Main Content */}
       <main className="relative z-10">
         {viewMode === "stack" ? (
-          <CardStack members={shuffledMembers} />
+          <CardStack members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
         ) : (
-          <BrowseGrid members={shuffledMembers} />
+          <BrowseGrid members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
         )}
       </main>
     </div>
