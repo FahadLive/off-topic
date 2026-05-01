@@ -1,16 +1,35 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "motion/react";
 import memberData from "../../data/members.json";
 
 import { CardStack } from "./components/CardStack";
 import { BrowseGrid } from "./components/BrowseGrid";
-import { Hash, LayoutGrid, Layers, Star, MapPin } from "lucide-react";
+import { Hash, LayoutGrid, Layers } from "lucide-react";
 import { shuffleArray } from "../utils/shuffleArray";
 
 type ViewMode = "stack" | "grid";
 
+function useAutoDarkMode() {
+  const [isDark, setIsDark] = useState(() =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+
+  // Live-follow system preference changes
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+}
+
 export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("stack");
+  useAutoDarkMode();
   const members = memberData.members;
 
   const membersById = useMemo(() => {
@@ -32,9 +51,9 @@ export default function App() {
   }, [members]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
       {/* Background funky text */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-[0.03] dark:opacity-[0.06]">
         <div className="absolute text-[20rem] font-black text-[#1b66f3] -top-20 -left-20 transform -rotate-12">
           OFF
         </div>
@@ -57,7 +76,7 @@ export default function App() {
           >
             <div className="flex items-center justify-center gap-2 mb-2">
               <Hash className="w-10 h-10 text-[#1b66f3]" />
-              <h1 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight">
+              <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tight">
                 off-topic
               </h1>
             </div>
@@ -70,13 +89,13 @@ export default function App() {
             transition={{ delay: 0.6 }}
             className="flex justify-center"
           >
-            <div className="flex gap-3 bg-white p-1.5 rounded-2xl border-2 border-[#1b66f3]/20 shadow-lg">
+            <div className="flex gap-3 bg-white dark:bg-gray-800 p-1.5 rounded-2xl border-2 border-[#1b66f3]/20 shadow-lg">
               <motion.button
                 onClick={() => setViewMode("stack")}
                 className={`px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${
                   viewMode === "stack"
                     ? "bg-[#1b66f3] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -89,7 +108,7 @@ export default function App() {
                 className={`px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all ${
                   viewMode === "grid"
                     ? "bg-[#1b66f3] text-white shadow-md"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

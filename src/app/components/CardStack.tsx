@@ -69,7 +69,7 @@ export function CardStack({ members, membersById, vouchCounts }: CardStackProps)
     <div className="relative h-full flex flex-col items-center justify-center px-4 py-8">
       {/* Counter */}
       <div className="mb-6 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           <span className="font-bold text-[#1b66f3]">{currentIndex + 1}</span> /{" "}
           <span className="font-bold">{members.length}</span>
         </p>
@@ -106,20 +106,20 @@ export function CardStack({ members, membersById, vouchCounts }: CardStackProps)
       <div className="flex items-center gap-6">
         <motion.button
           onClick={handlePrev}
-          className="p-4 rounded-xl bg-white shadow-lg hover:shadow-xl border-2 border-[#1b66f3]/30 hover:border-[#1b66f3]"
+          className="p-4 rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border-2 border-[#1b66f3]/30 hover:border-[#1b66f3] dark:border-[#1b66f3]/50"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
           <ChevronLeft className="w-6 h-6 text-[#1b66f3]" />
         </motion.button>
 
-        <p className="text-sm text-gray-500 italic">
+        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
           Swipe or click to navigate
         </p>
 
         <motion.button
           onClick={handleNext}
-          className="p-4 rounded-xl bg-white shadow-lg hover:shadow-xl border-2 border-[#1b66f3]/30 hover:border-[#1b66f3]"
+          className="p-4 rounded-xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border-2 border-[#1b66f3]/30 hover:border-[#1b66f3] dark:border-[#1b66f3]/50"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >

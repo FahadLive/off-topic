@@ -40,10 +40,10 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
   return (
     <div className="flex flex-col items-center font-mono">
       {/* Lanyard hole */}
-      <div className="w-[18px] h-[18px] rounded-full bg-gray-100 border-[2.5px] border-[#1b66f3] -mb-[9px] z-10" />
+      <div className="w-[18px] h-[18px] rounded-full bg-gray-100 dark:bg-gray-700 border-[2.5px] border-[#1b66f3] -mb-[9px] z-10" />
 
       {/* Card */}
-      <div className="w-[360px] bg-white rounded-xl border-2 border-[#1b66f3] overflow-hidden shadow-lg shadow-blue-100">
+      <div className="w-[360px] bg-white dark:bg-gray-800 rounded-xl border-2 border-[#1b66f3] overflow-hidden shadow-lg shadow-blue-100 dark:shadow-black/30">
         {/* Header */}
         <div className="bg-[#1b66f3] px-[18px] pt-[18px] pb-[14px] relative overflow-hidden">
           <div className="absolute -right-4 -top-4 text-[90px] font-bold text-white/[0.06] leading-none select-none pointer-events-none tracking-tighter">
@@ -90,7 +90,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
               <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
                 [major]
               </span>
-              <span className="text-[11px] text-gray-900 leading-snug">
+              <span className="text-[11px] text-gray-900 dark:text-gray-100 leading-snug">
                 {member.major}
               </span>
             </div>
@@ -101,7 +101,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
               </span>
               <span
                 ref={bioRef}
-                className={`text-[10px] text-gray-900 leading-relaxed ${bioExpanded ? "" : "line-clamp-3"}`}
+                className={`text-[10px] text-gray-900 dark:text-gray-100 leading-relaxed ${bioExpanded ? "" : "line-clamp-3"}`}
               >
                 {member.bio}
               </span>
@@ -136,7 +136,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
                   [vouched by]
                 </span>
-                <span className="text-[10px] text-gray-900 leading-snug">
+                <span className="text-[10px] text-gray-900 dark:text-gray-100 leading-snug">
                   {member.vouchedBy === "og-member"
                     ? "OG Member"
                     : membersById?.get(member.vouchedBy)?.name ?? member.vouchedBy}
@@ -149,7 +149,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 <span className="text-[9px] font-bold text-[#1b66f3] tracking-[2px] uppercase mb-[1px]">
                   [vouched for]
                 </span>
-                <span className="text-[10px] text-gray-900 leading-snug">
+                <span className="text-[10px] text-gray-900 dark:text-gray-100 leading-snug">
                   {vouchCounts!.get(member.id)} member{vouchCounts!.get(member.id)! > 1 ? "s" : ""}
                 </span>
               </div>
@@ -167,7 +167,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 href={`https://github.com/${member.github}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
               >
                 <Github className="w-[10px] h-[10px]" />
                 GitHub
@@ -178,7 +178,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 href={`https://linkedin.com/in/${member.linkedin}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
               >
                 <Linkedin className="w-[10px] h-[10px]" />
                 LinkedIn
@@ -189,7 +189,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 href={`https://twitter.com/${member.twitter}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
               >
                 <XIcon />
                 Twitter
@@ -200,7 +200,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
                 href={`https://instagram.com/${member.instagram}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 transition-colors"
+                className="flex items-center gap-1 text-[9px] font-bold text-[#1b66f3] border border-[#1b66f3] px-[7px] py-[3px] rounded tracking-wide hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
               >
                 <Instagram className="w-[10px] h-[10px]" />
                 Instagram
