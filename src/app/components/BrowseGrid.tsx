@@ -57,13 +57,13 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
       <div className="mb-8 space-y-4">
         {/* Search */}
         <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
           <input
             type="text"
             placeholder="Search members..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-[#1b66f3]/30 focus:border-[#1b66f3] focus:outline-none bg-white shadow-md font-semibold"
+            className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-[#1b66f3]/30 focus:border-[#1b66f3] focus:outline-none bg-white dark:bg-gray-800 dark:text-gray-100 shadow-md font-semibold"
           />
         </div>
 
@@ -75,7 +75,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
               className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                 selectedYear === "all"
                   ? "bg-[#1b66f3] text-white shadow-lg"
-                  : "bg-white text-gray-700 border-2 border-gray-200"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -89,7 +89,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
                 className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                   selectedYear === year
                     ? "bg-[#1b66f3] text-white shadow-lg"
-                    : "bg-white text-gray-700 border-2 border-gray-200"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -105,7 +105,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
               className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
                 selectedRole === "all"
                   ? "bg-yellow-400 text-gray-900 shadow-lg"
-                  : "bg-white text-gray-700 border-2 border-gray-200"
+                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-600"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -118,11 +118,11 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
                 placeholder="Search role..."
                 value={roleSearch}
                 onChange={(e) => setRoleSearch(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl border-2 border-gray-200"
+                className="w-full px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-gray-100"
               />
 
               {roleSearch && (
-                <div className="absolute mt-2 w-full bg-white border rounded-xl shadow-lg max-h-40 overflow-y-auto z-50">
+                <div className="absolute mt-2 w-full bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl shadow-lg max-h-40 overflow-y-auto z-50">
                   {filteredRoles.map((role) => (
                     <div
                       key={role}
@@ -130,7 +130,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
                         setSelectedRole(role);
                         setRoleSearch("");
                       }}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer dark:text-gray-100"
                     >
                       {role}
                     </div>
@@ -143,7 +143,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
       </div>
 
       {/* Results count */}
-      <p className="mb-6 text-sm text-gray-600">
+      <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
         Showing{" "}
         <span className="font-bold text-[#1b66f3]">
           {filteredMembers.length}
@@ -182,7 +182,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
 
       {filteredMembers.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-xl text-gray-500">No members found 🤷</p>
+          <p className="text-xl text-gray-500 dark:text-gray-400">No members found 🤷</p>
         </div>
       )}
     </div>
