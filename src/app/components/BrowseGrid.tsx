@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Github, Linkedin, Instagram, Search } from "lucide-react";
 import { MemberCard } from "../components/MemberCard";
+import { MemberDetailDialog } from "../components/MemberDetailDialog";
 import { useState } from "react";
 import { Member } from "../../types/data";
 
@@ -22,6 +23,7 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
   const [selectedRole, setSelectedRole] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [roleSearch, setRoleSearch] = useState("");
+  const [dialogState, setDialogState] = useState<{ member: Member; index: number } | null>(null);
 
   const uniqueRoles = Array.from(new Set(members.map((m) => m.role)));
 
@@ -172,6 +174,12 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
                 scale: 1.02,
                 zIndex: 10,
               }}
+              onClick={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest("a,button")) return;
+                setDialogState({ member, index });
+              }}
+              className="cursor-pointer"
             >
               {/* ID Card - Compact version */}
               <MemberCard member={member} index={index} membersById={membersById} vouchCounts={vouchCounts} />
@@ -179,6 +187,15 @@ export function BrowseGrid({ members, membersById, vouchCounts }: BrowseGridProp
           ))}
         </AnimatePresence>
       </motion.div>
+
+      <MemberDetailDialog
+        member={dialogState?.member ?? null}
+        index={dialogState?.index ?? 0}
+        membersById={membersById}
+        vouchCounts={vouchCounts}
+        open={dialogState !== null}
+        onOpenChange={(open) => !open && setDialogState(null)}
+      />
 
       {filteredMembers.length === 0 && (
         <div className="text-center py-20">

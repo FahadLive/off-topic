@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Github, Linkedin, Instagram } from "lucide-react";
 import { Member } from "../../types/data";
 
@@ -19,23 +19,23 @@ interface MemberCardProps {
   index: number;
   membersById?: Map<string, Member>;
   vouchCounts?: Map<string, number>;
+  expanded?: boolean;
 }
 
-export function MemberCard({ member, index, membersById, vouchCounts }: MemberCardProps) {
-  const [bioExpanded, setBioExpanded] = useState(false);
-  const [isClamped, setIsClamped] = useState(false);
-  const bioRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const el = bioRef.current;
-    if (el) {
-      setIsClamped(el.scrollHeight > el.clientHeight);
-    }
-  }, [member.bio]);
-
+export function MemberCard({ member, index, membersById, vouchCounts, expanded = false }: MemberCardProps) {
   const idNum = `#${String(index + 1).padStart(3, "0")}`;
   const yearShort = `'${String(member.passoutYear).slice(-2)}`;
-  const interests = member.interests.split(",").slice(0, 3);
+  const allInterests = member.interests.split(",");
+  const interests = expanded ? allInterests : allInterests.slice(0, 3);
+
+  const bioRef = useRef<HTMLSpanElement>(null);
+  const [bioClamped, setBioClamped] = useState(false);
+
+  useLayoutEffect(() => {
+    if (expanded) return;
+    const el = bioRef.current;
+    if (el) setBioClamped(el.scrollHeight > el.clientHeight + 1);
+  }, [member.bio, expanded]);
 
   return (
     <div className="flex flex-col items-center font-mono">
@@ -43,7 +43,7 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
       <div className="w-[18px] h-[18px] rounded-full bg-gray-100 dark:bg-gray-700 border-[2.5px] border-[#1b66f3] -mb-[9px] z-10" />
 
       {/* Card */}
-      <div className="w-[360px] bg-white dark:bg-gray-800 rounded-xl border-2 border-[#1b66f3] overflow-hidden shadow-lg shadow-blue-100 dark:shadow-black/30">
+      <div className={`${expanded ? "w-[360px] sm:w-[520px]" : "w-[360px]"} bg-white dark:bg-gray-800 rounded-xl border-2 border-[#1b66f3] overflow-hidden shadow-lg shadow-blue-100 dark:shadow-black/30`}>
         {/* Header */}
         <div className="bg-[#1b66f3] px-[18px] pt-[18px] pb-[14px] relative overflow-hidden">
           <div className="absolute -right-4 -top-4 text-[90px] font-bold text-white/[0.06] leading-none select-none pointer-events-none tracking-tighter">
@@ -101,17 +101,14 @@ export function MemberCard({ member, index, membersById, vouchCounts }: MemberCa
               </span>
               <span
                 ref={bioRef}
-                className={`text-[10px] text-gray-900 dark:text-gray-100 leading-relaxed ${bioExpanded ? "" : "line-clamp-3"}`}
+                className={`text-[10px] text-gray-900 dark:text-gray-100 leading-relaxed ${expanded ? "" : "line-clamp-3"}`}
               >
                 {member.bio}
               </span>
-              {(isClamped || bioExpanded) && (
-                <button
-                  onClick={() => setBioExpanded(!bioExpanded)}
-                  className="text-[9px] font-bold text-[#1b66f3] mt-[2px] text-left hover:underline cursor-pointer"
-                >
-                  {bioExpanded ? "show less" : "show more"}
-                </button>
+              {bioClamped && !expanded && (
+                <span className="text-[9px] font-bold text-[#1b66f3] mt-[2px] hover:underline">
+                  show more
+                </span>
               )}
             </div>
 

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, PanInfo } from "motion/react";
 import { MemberCard } from "./MemberCard";
+import { MemberDetailDialog } from "./MemberDetailDialog";
 import {
   Github,
   Linkedin,
@@ -26,6 +27,8 @@ const XIcon = () => (
 export function CardStack({ members, membersById, vouchCounts }: CardStackProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const currentMember = members[currentIndex];
 
@@ -46,6 +49,23 @@ export function CardStack({ members, membersById, vouchCounts }: CardStackProps)
       handleNext();
     }
   };
+
+  useEffect(() => {
+    if (dialogOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("input,textarea,select,[contenteditable='true']")) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        handlePrev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dialogOpen, members.length]);
 
   const variants = {
     enter: (direction: number) => ({
@@ -94,13 +114,37 @@ export function CardStack({ members, membersById, vouchCounts }: CardStackProps)
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.7}
             onDragEnd={handleDragEnd}
-            className="cursor-grab active:cursor-grabbing"
+            onPointerDown={(e) => {
+              pointerStartRef.current = { x: e.clientX, y: e.clientY };
+            }}
+            onTap={(e, info) => {
+              const start = pointerStartRef.current;
+              pointerStartRef.current = null;
+              if (start) {
+                const dx = info.point.x - start.x;
+                const dy = info.point.y - start.y;
+                if (Math.hypot(dx, dy) > 8) return;
+              }
+              const target = e.target as HTMLElement;
+              if (target.closest("a,button")) return;
+              setDialogOpen(true);
+            }}
+            className="cursor-pointer active:cursor-grabbing"
           >
             {/* ID Card */}
             <MemberCard member={members[currentIndex]} index={currentIndex} membersById={membersById} vouchCounts={vouchCounts} />
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <MemberDetailDialog
+        member={currentMember}
+        index={currentIndex}
+        membersById={membersById}
+        vouchCounts={vouchCounts}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
 
       {/* Navigation */}
       <div className="flex items-center gap-6">
@@ -114,7 +158,7 @@ export function CardStack({ members, membersById, vouchCounts }: CardStackProps)
         </motion.button>
 
         <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-          Swipe or click to navigate
+          Swipe, click, or use ← → keys
         </p>
 
         <motion.button
