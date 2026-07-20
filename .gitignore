@@ -2,3 +2,4 @@
 .netlify
 data/
 node_modules/
+dist/
