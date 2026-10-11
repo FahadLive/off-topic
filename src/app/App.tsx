@@ -1,13 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "motion/react";
-import memberData from "../../data/members.json";
 
 import { CardStack } from "./components/CardStack";
 import { BrowseGrid } from "./components/BrowseGrid";
 import { Hash, LayoutGrid, Layers } from "lucide-react";
 import { shuffleArray } from "../utils/shuffleArray";
+import type { Member } from "../types/data";
 
 type ViewMode = "stack" | "grid";
+
+const EMPTY_MEMBERS: Member[] = [];
 
 function useAutoDarkMode() {
   const [isDark, setIsDark] = useState(() =>
@@ -27,10 +29,51 @@ function useAutoDarkMode() {
   }, [isDark]);
 }
 
+type MembersState =
+  | { status: "loading" }
+  | { status: "error"; message: string }
+  | { status: "ready"; members: Member[] };
+
+function useMembers(): MembersState {
+  const [state, setState] = useState<MembersState>({ status: "loading" });
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/members")
+      .then((res) => {
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        return res.json();
+      })
+      .then((data: Member[]) => {
+        if (alive) setState({ status: "ready", members: Array.isArray(data) ? data : [] });
+      })
+      .catch(async () => {
+        // Running `pnpm dev` without the Netlify functions? Fall back to the
+        // local file so the site still renders. Never reached in production.
+        if (import.meta.env.DEV) {
+          try {
+            const local = await import("../../data/members.json");
+            if (alive) setState({ status: "ready", members: local.members as Member[] });
+            return;
+          } catch {
+            // ignore, report the error below
+          }
+        }
+        if (alive) setState({ status: "error", message: "Couldn't load the member directory." });
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return state;
+}
+
 export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("stack");
   useAutoDarkMode();
-  const members = memberData.members;
+  const membersState = useMembers();
+  const members = membersState.status === "ready" ? membersState.members : EMPTY_MEMBERS;
 
   const membersById = useMemo(() => {
     return new Map(members.map((m) => [m.id, m]));
@@ -123,11 +166,39 @@ export default function App() {
 
       {/* Main Content */}
       <main className="relative z-10">
-        {viewMode === "stack" ? (
-          <CardStack members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
-        ) : (
-          <BrowseGrid members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
+        {membersState.status === "loading" && (
+          <div className="flex items-center justify-center py-24">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-full border-4 border-[#1b66f3]/20 border-t-[#1b66f3] animate-spin" />
+              <p className="font-mono text-sm text-gray-500 dark:text-gray-400">
+                loading members…
+              </p>
+            </div>
+          </div>
         )}
+
+        {membersState.status === "error" && (
+          <div className="flex items-center justify-center px-4 py-24">
+            <div className="max-w-md text-center bg-white dark:bg-gray-800 border-2 border-[#1b66f3]/20 rounded-2xl p-8 shadow-lg">
+              <p className="font-mono text-sm text-gray-700 dark:text-gray-200 mb-4">
+                {membersState.message}
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-5 py-2.5 rounded-xl bg-[#1b66f3] text-white text-sm font-bold hover:bg-[#1b66f3]/90 transition-colors"
+              >
+                Try again
+              </button>
+            </div>
+          </div>
+        )}
+
+        {membersState.status === "ready" &&
+          (viewMode === "stack" ? (
+            <CardStack members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
+          ) : (
+            <BrowseGrid members={shuffledMembers} membersById={membersById} vouchCounts={vouchCounts} />
+          ))}
       </main>
     </div>
   );

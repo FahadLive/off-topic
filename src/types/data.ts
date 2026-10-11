@@ -11,5 +11,14 @@ export type Member = {
   github: string;
   linkedin: string;
   twitter: string;
+  instagram: string;
   vouchedBy: string;
+};
+
+export type PendingSubmission = {
+  /** Stable id from the source (Tally submission id, or generated for manual adds). */
+  submissionId: string;
+  submittedAt: string;
+  source: "tally" | "manual";
+  member: Member;
 };

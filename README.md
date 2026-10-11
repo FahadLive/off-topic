@@ -76,15 +76,24 @@ src/
 ├── app/              # Main app components
 │   ├── App.tsx       # Root component
 │   └── components/   # UI components
-├── data/             # Member data (JSON)
+├── admin/            # Password-gated admin UI (served at /admin)
+├── data/             # Optional local seed data (JSON)
 ├── styles/           # CSS and Tailwind config
 ├── types/            # TypeScript type definitions
 └── utils/            # Utility functions
+
+netlify/
+├── functions/        # Serverless API (members, tally webhook, admin, upload)
+└── lib/              # Shared helpers (auth, blobs store, Tally parsing)
 ```
 
 ## Adding Members
 
-The member data is stored in `data/members.json`. This file is the heart of the application — without it, the directory will be empty.
+Member data lives in **Netlify Blobs**, not in the repo. Curate it from the
+password-gated admin UI at `/admin` (see [Admin](#admin) below).
+
+`data/members.json`, when present, is only a local seed/export. The directory
+no longer reads it in production — it is fetched from `/api/members`.
 
 ### Data Schema
 
@@ -104,6 +113,8 @@ Each member object requires the following fields:
 | `github`      | string | GitHub username                         |
 | `linkedin`    | string | LinkedIn username                       |
 | `twitter`     | string | Twitter username (optional)             |
+| `instagram`   | string | Instagram username (optional)           |
+| `vouchedBy`   | string | Member `id` who vouched, or "og-member" |
 
 ### Example Entry
 
@@ -130,6 +141,50 @@ Each member object requires the following fields:
 - The `color` field controls the card accent — pick colors that contrast well with white
 - For images, you can use any URL (hosted photos, Gravatar, DiceBear, etc.)
 - Leave `twitter` as an empty string `""` if the member doesn't have one
+
+## Admin
+
+Member data lives in Netlify Blobs and is curated from the password-gated admin
+UI at `/admin`. Two people (or more) can share the same password.
+
+### One-time setup
+
+1. Link the project to a Netlify site: `netlify link` (or `netlify init`).
+2. Set environment variables in the Netlify UI (Site configuration →
+   Environment variables), or locally in `.env` for `netlify dev`:
+   - `ADMIN_PASSWORD` — shared password for `/admin` (**required**)
+   - `ADMIN_SESSION_SECRET` — optional random string for signing sessions
+   - `TALLY_SIGNING_SECRET` — optional, see below
+3. Deploy: `pnpm deploy`, or let Netlify build from git.
+4. Open `https://<your-site>/admin`, sign in, and use **Published → Import
+   members.json** to load your existing `data/members.json` (or add members by
+   hand).
+
+### Tally submissions, automatically
+
+In Tally, go to **Form → Integrations → Webhooks** and add:
+
+- URL: `https://<your-site>/api/tally`
+- Copy the **signing secret** into `TALLY_SIGNING_SECRET`
+
+New responses then appear under the **Pending** tab. Edit anything, then
+**Approve & publish** to add them to the directory (or **Reject**). Tally photo
+URLs are used as-is; you can also upload a replacement photo in the form.
+
+### Local development
+
+```bash
+cp .env.example .env    # set ADMIN_PASSWORD
+pnpm dev:netlify        # Vite + Functions + Blobs at http://localhost:8888
+```
+
+Plain `pnpm dev` still serves the public site (falling back to
+`data/members.json`), but the admin UI and the API need `pnpm dev:netlify`.
+
+> **Netlify CLI on Node 25:** if `netlify dev` crashes with `fetch failed` while
+> setting up the edge functions environment, run it under an LTS Node (for
+> example `nvm use 20` — `nvm install 20` if missing). Deploys via
+> `pnpm deploy` are unaffected.
 
 ## License
 

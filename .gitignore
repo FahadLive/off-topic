@@ -3,3 +3,10 @@
 data/
 node_modules/
 dist/
+.env
+.env.*
+!.env.example
+
+# Edge functions workspace (created by `netlify dev`)
+deno.lock
+.deno
